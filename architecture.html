@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Renewable Energy Orchestrator — Architecture</title>
+<style>
+body{margin:0;padding:30px;background:#0b0f1a;color:#e6edf7;font-family:'Inter',-apple-system,sans-serif;}
+h1{margin:0 0 4px;font-size:26px;background:linear-gradient(90deg,#38bdf8,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h2{font-size:14px;color:#8b96ab;font-weight:400;margin:0 0 30px}
+.box{background:#121827;border:1px solid #243049;border-radius:12px;padding:18px 22px;position:relative}
+.box h3{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#8b96ab}
+.box .title{font-size:18px;font-weight:700;margin-bottom:6px}
+.box p{font-size:12px;color:#c9d4e8;line-height:1.6;margin:4px 0}
+.pill{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:600;margin:2px 4px 2px 0}
+.pill.api{background:rgba(56,189,248,0.15);color:#38bdf8}
+.pill.opt{background:rgba(167,139,250,0.15);color:#a78bfa}
+.pill.sim{background:rgba(96,165,250,0.15);color:#60a5fa}
+.pill.agent{background:linear-gradient(135deg,#8b5cf6,#ec4899);color:#fff}
+.pill.agent-rule{background:rgba(148,163,184,0.15);color:#cbd5e1}
+.pill.dash{background:rgba(16,185,129,0.15);color:#10b981}
+.pill.asset{background:rgba(251,191,36,0.15);color:#fbbf24}
+.arrow{width:2px;height:30px;background:linear-gradient(to bottom,#38bdf8,#10b981);margin:0 auto;position:relative}
+.arrow::after{content:'▼';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);color:#10b981;font-size:12px}
+.arrow-label{position:absolute;left:20px;top:8px;font-size:10px;color:#8b96ab;white-space:nowrap}
+.arrow.h{width:60px;height:2px;display:inline-block;vertical-align:middle;margin:0 8px}
+.arrow.h::after{content:'▶';position:absolute;transform:none;right:-10px;top:-7px;left:auto;bottom:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;max-width:1200px;margin:0 auto}
+.center-col{display:flex;flex-direction:column;align-items:center;gap:0}
+.full{grid-column:1/-1}
+.row{display:flex;align-items:center;justify-content:center;gap:16px;margin:12px 0}
+.loop-box{background:rgba(139,92,246,0.08);border:2px dashed #8b5cf6;border-radius:12px;padding:16px;margin-top:10px}
+.kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}
+.kpi{background:#1a2236;border-radius:8px;padding:10px;text-align:center}
+.kpi .v{font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.kpi .l{font-size:10px;color:#8b96ab;text-transform:uppercase;margin-top:2px}
+.footer{max-width:1200px;margin:30px auto 0;font-size:11px;color:#8b96ab;line-height:1.7;border-top:1px solid #243049;padding-top:20px}
+.tag-f{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;background:linear-gradient(135deg,#10b981,#38bdf8);color:#000;margin-left:6px}
+</style></head>
+<body>
+<div style="max-width:1200px;margin:0 auto 20px">
+  <h1>⚡ Renewable Energy Orchestrator</h1>
+  <h2>ET AI Hackathon · Agentic Edition · Problem 4 — Architecture Overview &nbsp;·&nbsp; <span style="color:#10b981">9-Blocker position: D2 / F3</span></h2>
+</div>
+
+<div class="grid">
+  <!-- Left: Data sources -->
+  <div class="box">
+    <h3>Data Sources (Inputs)</h3>
+    <p class="title">Real-time Telemetry + Forecasts</p>
+    <p>
+      <span class="pill asset">☀️ 5 Solar farms</span>
+      <span class="pill asset">💨 3 Wind farms</span>
+      <span class="pill asset">🔋 2 BESS (SOC, health)</span>
+      <span class="pill asset">⚡ Grid (price, freq)</span>
+      <span class="pill asset">🏭 Load (demand)</span>
+    </p>
+    <p>Weather forecasts · Price forecasts · Demand forecasts · Maintenance schedules · Storm alerts</p>
+    <p style="color:#8b96ab;font-size:11px">Inputs are structured telemetry (kW/kWh/MW) + textual alerts → supports D2 claim. D3 stretch: parse weather PDFs/maintenance reports.</p>
+  </div>
+
+  <!-- Center: Dashboard -->
+  <div class="box" style="text-align:center">
+    <h3>Operator Dashboard <span class="pill dash">React · WebSocket</span></h3>
+    <p class="title">Real-time Control Plane</p>
+    <p>Live power-flow topology · Dispatch timeline chart · KPIs (₹/CO₂/RE%) · Agent reasoning log</p>
+    <p>Event injection · Scenario loader · Play/Pause/Speed · Human override (responsible AI)</p>
+  </div>
+
+  <!-- Right: KPIs -->
+  <div class="box">
+    <h3>Outcomes</h3>
+    <p class="title">Multi-objective KPIs</p>
+    <div class="kpi-strip" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="kpi"><div class="v" style="color:#10b981">₹↓</div><div class="l">Cost</div></div>
+      <div class="kpi"><div class="v" style="color:#38bdf8">tCO₂↓</div><div class="l">Carbon</div></div>
+      <div class="kpi"><div class="v" style="color:#fbbf24">kW✓</div><div class="l">Reliability</div></div>
+      <div class="kpi"><div class="v" style="color:#a78bfa">bat+</div><div class="l">Battery life</div></div>
+      <div class="kpi"><div class="v" style="color:#60a5fa">curt↓</div><div class="l">Curtailment</div></div>
+      <div class="kpi"><div class="v" style="color:#10b981">₹↑</div><div class="l">Export profit</div></div>
+    </div>
+  </div>
+
+  <!-- Center column contains main pipeline -->
+  <div></div>
+  <div class="center-col">
+    <div class="arrow"><span class="arrow-label">WebSocket JSON</span></div>
+    <div class="box" style="width:100%">
+      <h3>API Gateway <span class="pill api">FastAPI · :8000</span></h3>
+      <p class="title">Control + State API</p>
+      <p><code>/api/play · /api/pause · /api/step · /api/inject-event · /api/load-scenario · /ws</code></p>
+      <p>Broadcasts state snapshots every tick to all connected dashboards.</p>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">state every 15 sim-min</span></div>
+
+    <div class="box" style="width:100%">
+      <h3>Simulation Engine <span class="pill sim">Physics · Events · Forecasts</span></h3>
+      <p class="title">World Model</p>
+      <p>Solar sine-curve diurnal · Wind turbine power curve + OU-noise gusts · Battery SOC integrator (efficiency, degradation cost) · Grid double-hump demand + price · Event system (cloud, gust, fault, spike, storm).</p>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">potentials + forecasts + alerts</span></div>
+
+    <div class="box loop-box" style="width:100%;border-color:#8b5cf6">
+      <h3 style="color:#c4b5fd">Agent Brain — Observe / Reason / Tool / Validate / Act <span class="pill agent">LLM OPTIONAL</span><span class="pill agent-rule">RULE FALLBACK</span></h3>
+      <p class="title" style="color:#fff">Autonomous Decision Loop (runs every tick)</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font-size:12px">
+        <div style="background:#0b0f1a;border-radius:8px;padding:10px">
+          <b style="color:#38bdf8">① OBSERVE</b><br>
+          Read state · forecasts · alerts · asset health
+        </div>
+        <div style="background:#0b0f1a;border-radius:8px;padding:10px">
+          <b style="color:#fbbf24">② REASON</b><br>
+          Diagnose anomalies · spot opportunities · assess forecast confidence · choose objective weights + reserve
+        </div>
+        <div style="background:#0b0f1a;border-radius:8px;padding:10px">
+          <b style="color:#a78bfa">③ TOOL: OPTIMIZER</b><br>
+          Call LP with chosen weights — solver produces kW flows for all assets
+        </div>
+        <div style="background:#0b0f1a;border-radius:8px;padding:10px">
+          <b style="color:#ef4444">④ VALIDATE</b><br>
+          Check critical load served, high-price imports, SOC violations — <span style="color:#10b981">replan if unsafe</span>
+        </div>
+      </div>
+      <p style="margin-top:10px;font-size:12px;color:#c9d4e8">LLM (GPT-4o-mini / Claude / Gemini) used when API key present; sophisticated deterministic rule-based reasoner with identical O-R-T-V-A contract guarantees the demo always works.</p>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">optimizer call with weights</span></div>
+
+    <div class="row" style="width:100%">
+      <div class="box" style="flex:1">
+        <h3>Optimizer <span class="pill opt">PuLP · CBC MILP</span></h3>
+        <p class="title">Multi-objective LP</p>
+        <p>~20 continuous variables · Power-balance equality · Capacity/SOC bounds · Critical-load soft constraints · Demand-response limits · Dynamically weighted objective (6 terms) normalized at every tick.</p>
+        <p style="color:#10b981">Greedy fallback on infeasibility → zero crashes.</p>
+      </div>
+    </div>
+
+    <div class="arrow"><span class="arrow-label">dispatch actions (kW)</span></div>
+
+    <div class="box" style="width:100%">
+      <h3>Asset Dispatch</h3>
+      <p class="title">Apply actions → update state → compute KPIs</p>
+      <p>Solar/Wind use+curtail · Battery charge/discharge (SOC update, throughput cost) · Grid import/export · Demand served + DR cut · Cumulative ₹ cost/revenue, CO₂, renewable kWh, curtailment, unmet load.</p>
+    </div>
+  </div>
+  <div></div>
+</div>
+
+<div class="footer" style="max-width:1200px;margin:30px auto 0">
+  <b style="color:#e6edf7">9-Blocker justification (D2 / F3):</b><br>
+  <b>D2 — Structured/textual input with high reliability:</b> Telemetry (kW/kWh/price numbers) + textual weather/storm alerts; reliability enforced by hard constraints in the LP (min SOC, critical-load penalties, capacity caps), plus a greedy fallback solver and an agentic replan loop that bumps reliability when the first plan is unsafe. Validator ensures zero unmet critical load across all tested scenarios.
+  <br><br>
+  <b>F1 — Optimal cluster of actions:</b> LP produces charge/discharge/buy/sell/curtail/DR decisions across all assets each tick.<span class="tag-f">F1</span><br>
+  <b>F2 — Optimality criteria adjusted per situation + uncertainty:</b> Agent dynamically selects 6 objective weights (high price → profit+reliability, surplus RE → curtailment+carbon, storm → reliability+reserve, off-peak → cost+battery-life), explicitly reasons about forecast confidence, and holds battery reserve proportional to uncertainty.</b><span class="tag-f">F2</span><br>
+  <b>F3 — Simulation over time with varying conditions:</b> Continuous 24-hour simulation with stochastic weather, price volatility, forecast errors, and live event injection (battery faults, line trips, storms, price spikes/demand surges). Pre-built scenarios (Summer Peak, Stormy Night, Price Volatility, Normal Day) demonstrate robust adaptability.</b><span class="tag-f">F3</span><br>
+  <br>
+  <b>Responsible AI / robustness:</b> Structured JSON outputs with clamping · Deterministic fallback on LLM failure · LP hard constraints (physics cannot be violated) · Human override panel · Full audit trail (state + reasoning saved every tick).<br>
+  <b>Scalability:</b> Assets are configuration-driven; adding farms/BESS/consumers is a data change, not a code change.
+</div>
+</body></html>

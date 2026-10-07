@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+websockets
+pulp<3.0
+numpy
+pydantic
+python-multipart
